@@ -35,7 +35,7 @@ sources:
         color: '34c759'
       - name: General
     jsonParser:
-      searchUrl: "https://solidtorrents.to/api/v1/search?q={query}&limit=100&sort=seeders"
+      searchUrl: "/api/v1/search?q={query}&limit=100&sort=seeders"
       results: results
       magnetHash:
         query: infohash
@@ -57,7 +57,7 @@ sources:
         color: '34c759'
       - name: General
     jsonParser:
-      searchUrl: "https://torrents-csv.com/service/search?q={query}"
+      searchUrl: "/service/search?q={query}"
       results: torrents
       magnetHash:
         query: infohash
@@ -100,7 +100,7 @@ sources:
     tags:
       - name: General
     htmlParser:
-      searchUrl: "https://knaben.net/search/{query}"
+      searchUrl: "/search/{query}"
       rows: "table.table-striped tbody tr"
       magnet:
         query: "a[href^='magnet']"
