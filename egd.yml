@@ -1,0 +1,111 @@
+name: Custom Debrid Plugins
+author: User
+sources:
+  - name: The Pirate Bay
+    version: 1
+    minVersion: '0.6.4'
+    about: Classic torrent search via The Pirate Bay API.
+    website: https://thepiratebay.org
+    tags:
+      - name: Public
+        color: ff9500
+      - name: Movies
+      - name: TV
+    jsonParser:
+      searchUrl: https://apibay.org/q.php?q={query}
+      magnetHash:
+        query: info_hash
+      title:
+        query: name
+      size:
+        query: size
+      sl:
+        seeders: seeders
+        leechers: leechers
+
+  - name: SolidTorrents
+    version: 1
+    minVersion: '0.6.4'
+    about: Comprehensive torrent search via SolidTorrents API.
+    website: https://solidtorrents.to
+    tags:
+      - name: Reliable
+        color: 34c759
+      - name: General
+    jsonParser:
+      searchUrl: https://solidtorrents.to/api/v1/search?q={query}&limit=100&sort=seeders
+      results: results
+      magnetHash:
+        query: infohash
+      title:
+        query: title
+      size:
+        query: size
+      sl:
+        seeders: seeders
+        leechers: leechers
+
+  - name: Torrents CSV
+    version: 1
+    minVersion: '0.6.4'
+    about: Fast torrent search via torrents-csv.com.
+    website: https://torrents-csv.com
+    tags:
+      - name: Fast
+        color: 34c759
+      - name: General
+    jsonParser:
+      searchUrl: https://torrents-csv.com/service/search?q={query}
+      results: torrents
+      magnetHash:
+        query: infohash
+      title:
+        query: name
+      size:
+        query: size_bytes
+      sl:
+        seeders: seeders
+        leechers: leechers
+
+  - name: YTS
+    version: 1
+    minVersion: '0.6.4'
+    about: Movie-focused torrent search.
+    website: https://yts.mx
+    tags:
+      - name: Movies
+        color: 32ade6
+    jsonParser:
+      searchUrl: https://yts.mx/api/v2/list_movies.json?query_term={query}
+      results: data.movies
+      subResults: torrents
+      magnetHash:
+        query: hash
+      title:
+        query: title_long
+      size:
+        query: size_bytes
+      sl:
+        seeders: seeds
+        leechers: peers
+
+  - name: Knaben
+    version: 1
+    minVersion: '0.6.4'
+    about: Knaben torrent search (HTML Parser).
+    website: https://knaben.net
+    tags:
+      - name: General
+    htmlParser:
+      searchUrl: https://knaben.net/search/{query}
+      rows: table.table-striped tbody tr
+      magnet:
+        query: a[href^="magnet"]
+        attribute: href
+      title:
+        query: .title a
+      size:
+        query: td:nth-child(3)
+      sl:
+        seeders: td:nth-child(4)
+        leechers: td:nth-child(5)
