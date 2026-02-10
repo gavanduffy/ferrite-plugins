@@ -1,8 +1,8 @@
-name: Ferrite-Plugins
+name: Ferrite iOS Master Plugins
 author: kingbri & User
 sources:
-  - name: TorrentSearchAPI
-    version: 1.0.0
+  - name: Torrent Search Worker
+    version: 1
     minVersion: '0.7.2'
     about: Search aggregator via Cloudflare Worker API.
     website: https://torrent-search-worker.euangrimshaw.workers.dev
@@ -10,7 +10,6 @@ sources:
       - name: Aggregator
         color: '5856d6'
     jsonParser:
-      # Relative path to prevent URL duplication
       searchUrl: "/api/search?q={query}"
       results: results
       title:
@@ -81,19 +80,6 @@ sources:
     tags:
       - name: Reliable
         color: '34c759'
-      - name: Anime
-    rssParser:
-      searchUrl: "/?page=rss&q={query}"
-      items: item
-      magnetHash:
-        query: 'nyaa:infoHash'
-      title:
-        query: title
-      size:
-        query: 'nyaa:size'
-      sl:
-        seeders: 'nyaa:seeders'
-        leechers: 'nyaa:leechers'
     htmlParser:
       searchUrl: "/?q={query}"
       rows: '.torrent-list tbody tr'
@@ -150,6 +136,27 @@ sources:
         seeders: seeders
         leechers: leechers
 
+  - name: Knaben
+    version: 1
+    minVersion: '0.6.4'
+    about: Knaben torrent search via HTML parsing.
+    website: https://knaben.net
+    tags:
+      - name: General
+    htmlParser:
+      searchUrl: "/search/{query}"
+      rows: 'table.table-striped tbody tr'
+      magnet:
+        query: "a[href^='magnet']"
+        attribute: href
+      title:
+        query: .title a
+      size:
+        query: 'td:nth-child(3)'
+      sl:
+        seeders: 'td:nth-child(4)'
+        leechers: 'td:nth-child(5)'
+
 actions:
   - name: Open in Outplayer
     version: 3
@@ -160,12 +167,3 @@ actions:
     deeplink:
       - os: iOS
         scheme: 'outplayer://{link}'
-  - name: Open in VLC
-    version: 3
-    minVersion: '0.6.4'
-    requires:
-      - debrid
-    deeplink:
-      - os: iOS
-        scheme: 'vlc-x-callback://x-callback-url/stream?url=${link}'
-      - scheme: 'vlc://${link}'
