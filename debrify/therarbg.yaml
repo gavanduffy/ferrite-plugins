@@ -1,0 +1,95 @@
+# TheRARBG Search Engine Configuration
+# RARBG revival - movies, TV, IMDB-indexed posts via JSON API.
+# Routed through codetabs proxy (5 req/sec, no signup) since therarbg.to
+# is ISP-blocked in many regions.
+#
+# Pagination uses location: path so {page} is substituted INTO the quest
+# URL value, since codetabs strips any outer query params.
+
+id: therarbg
+display_name: "TheRARBG"
+icon: search
+
+# Engine capabilities
+capabilities:
+  keyword_search: true
+  imdb_search: true       # IMDB ID is matched as a keyword in post names
+  series_support: false   # Series queries fall back to keyword path which
+                          # works fine for "Title S01E01" style strings
+
+# API endpoints - proxied via codetabs.
+# {query} / {imdb_id} carry the search term; {page} is the current page
+# number injected by the pagination handler when location: path is set.
+api:
+  urls:
+    keyword: "https://api.codetabs.com/v1/proxy?quest=https://therarbg.to/get-posts/keywords:{query}:format:json/?page={page}"
+    imdb:    "https://api.codetabs.com/v1/proxy?quest=https://therarbg.to/get-posts/keywords:{imdb_id}:format:json/?page={page}"
+
+# Path-template URL builder (no extra query params appended at the outer
+# layer - codetabs would strip them anyway).
+path_params:
+  type: path_params
+
+# Page-based pagination embedded into the URL template via {page}.
+# location: path tells the executor to substitute the page number into
+# the URL instead of appending ?page=N as an outer query param.
+pagination:
+  type: page
+  results_per_page: 50
+  max_pages: 4
+  page:
+    param_name: page
+    start_page: 1
+    has_more_field: "links.next"
+    location: path
+
+# Response format - direct JSON, results live under "results"
+response_format:
+  type: json
+  results_path: "results"
+
+# Field mappings - TheRARBG uses compact single-letter keys
+# h=hash, n=name, s=size, se=seeders, le=leechers, a=added, c=category
+field_mappings:
+  infohash:
+    source: "h"
+    type: direct
+    conversion: lowercase
+  name:
+    source: "n"
+    type: direct
+  size_bytes:
+    source: "s"
+    type: direct
+  seeders:
+    source: "se"
+    type: direct
+  leechers:
+    source: "le"
+    type: direct
+  created_unix:
+    source: "a"
+    type: direct
+  category:
+    source: "c"
+    type: direct
+
+# User-configurable settings
+settings:
+  - id: enabled
+    type: toggle
+    label: "Enable TheRARBG"
+    default: true
+  - id: max_results
+    type: dropdown
+    label: "Maximum Results"
+    default: 100
+    options: [50, 100, 150, 200]
+
+# TV mode configuration
+tv_mode:
+  enabled_default: true
+  limits:
+    small: 50
+    large: 100
+    quick_play: 50

@@ -1,0 +1,78 @@
+# Knaben Torrent Search Engine
+# Uses POST request with JSON body
+id: "knaben"
+display_name: "Knaben"
+description: "Knaben torrent search using API v1"
+icon: "search"
+categories: ["general"]
+
+capabilities:
+  keyword_search: true
+  imdb_search: false
+  series_support: false
+
+# API configuration with POST method
+api:
+  base_url: "https://api.knaben.org/v1"
+  method: "POST"
+  timeout_seconds: 30
+  params:
+    - name: "query"
+      source: "query"
+      location: "body"
+      required: true
+    - name: "search_field"
+      value: "title"
+      location: "body"
+    - name: "size"
+      value: "100"
+      location: "body"
+      value_type: "int"
+    - name: "hide_unsafe"
+      value: "true"
+      location: "body"
+      value_type: "bool"
+    - name: "hide_xxx"
+      value: "false"
+      location: "body"
+      value_type: "bool"
+
+# Query params configuration (for POST body in this case)
+query_params:
+  type: "query_params"
+  param_name: "query"
+  encode: false
+
+# Pagination using offset-based approach
+pagination:
+  type: "offset"
+  results_per_page: 100
+  max_pages: 5
+  offset:
+    param_name: "from"
+    start_offset: 0
+    location: "body"  # Pagination goes in POST body
+
+# Response parsing
+response_format:
+  type: "json"
+  results_path: "hits"
+
+field_mappings:
+  name: "title"
+  infohash: "hash"
+  size_bytes: "bytes"
+  seeders: "seeders"
+  leechers: "peers"
+
+# Settings
+settings:
+  - id: "enabled"
+    type: "toggle"
+    label: "Enable Knaben"
+    default: true
+  - id: "max_results"
+    type: "dropdown"
+    label: "Max Results"
+    default: 100
+    options: [100, 200, 300, 400, 500]

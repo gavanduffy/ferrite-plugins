@@ -1,0 +1,79 @@
+# Nyaa Search Engine Configuration
+# Anime, manga, and Japanese content via Nyaa.si RSS feed
+
+id: nyaa
+display_name: "Nyaa"
+icon: search
+
+# Engine capabilities
+capabilities:
+  keyword_search: true
+  imdb_search: false
+  series_support: true
+
+# API endpoint - RSS feed on root
+api:
+  urls:
+    keyword: "https://nyaa.si/"
+  # Static param to switch the response from HTML to RSS
+  params:
+    - name: "page"
+      value: "rss"
+      location: "query"
+
+# Query parameter
+query_params:
+  type: query_params
+  param_name: "q"
+
+# No pagination for now (RSS engines support only `none` today)
+pagination:
+  type: none
+
+# Response format - RSS 2.0 with nyaa:* namespaced tags
+response_format:
+  type: rss
+  results_path: "channel.item"
+
+# Field mappings
+# Notes:
+# - Parser strips namespace prefixes, so <nyaa:infoHash> becomes "infoHash".
+# - <nyaa:size> ("1.4 GiB") is normalized to integer bytes as "size_bytes".
+# - seeders / leechers / downloads are pre-converted to ints.
+# - created_unix is omitted; falls back to "now" because parsing the
+#   RFC1123 <pubDate> string isn't supported in the engine yet.
+field_mappings:
+  infohash:
+    source: "infoHash"
+    type: direct
+    conversion: lowercase
+  name:
+    source: "title"
+    type: direct
+  size_bytes:
+    source: "size_bytes"
+    type: direct
+  seeders:
+    source: "seeders"
+    type: direct
+  leechers:
+    source: "leechers"
+    type: direct
+  category:
+    source: "category"
+    type: direct
+
+# User-configurable settings
+settings:
+  - id: enabled
+    type: toggle
+    label: "Enable Nyaa"
+    default: true
+
+# TV mode configuration
+tv_mode:
+  enabled_default: false
+  limits:
+    small: 50
+    large: 75
+    quick_play: 50
