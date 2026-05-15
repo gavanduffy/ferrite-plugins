@@ -1,0 +1,62 @@
+{
+  "engine_version": 2.5,
+  "version": 1.0,
+  "url": "https://en.btdig.com",
+  "name": "btdig",
+  "description": "Parser for btdig.com",
+  "supported_categories": {
+    "all": ""
+  },
+  "search": {
+    "no_category": "${url}/search?q=${query}&p=${page}&order=0",
+    "page_start": 0
+  },
+
+  "download": {
+    "direct": {
+      "entry-class": "one_result"
+    },
+    "regexes": {
+      "name": {
+        "regex_use": "first",
+        "regexps": [
+          {
+            "regex": "class=\"torrent_name\"([^<]+)<a([^>]+)>(.*?)</a>",
+            "group": 3,
+            "slug_type": "complete"
+          }
+        ]
+      },
+      "magnet": {
+        "regex_use": "first",
+        "regexps": [
+          {
+            "regex": "href=\"(magnet:\\?xt=urn:btih:[^\"]+)",
+            "group": 1,
+            "slug_type": "complete"
+          }
+        ]
+      },
+      "date_added": {
+        "regex_use": "first",
+        "regexps": [
+          {
+            "regex": "class=\"torrent_age\"([^>]+)>([^<]+)",
+            "group": 2,
+            "slug_type": "complete"
+          }
+        ]
+      },
+      "size": {
+        "regex_use": "first",
+        "regexps": [
+          {
+            "regex": "class=\"torrent_size\"([^>]+)>([^<]+)",
+            "group": 2,
+            "slug_type": "complete"
+          }
+        ]
+      }
+    }
+  }
+}
